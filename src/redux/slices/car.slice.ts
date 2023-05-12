@@ -32,7 +32,7 @@ const getAll = createAsyncThunk<ICar[], void>(
     }
 )
 
-const save = createAsyncThunk<void, {car: ICar }>(
+const save = createAsyncThunk<void, { car: ICar }>(
     'carSlice/save',
     async ({car}, {rejectWithValue}) => {
         try {
@@ -44,11 +44,23 @@ const save = createAsyncThunk<void, {car: ICar }>(
     }
 )
 
-const update = createAsyncThunk<ICar, { id: number, car: ICar }>(
+const update = createAsyncThunk<void, { id: number, car: ICar }>(
     'carSlice/update',
     async ({id, car}, {rejectWithValue}) => {
         try {
             await carService.updateById(id, car)
+        } catch (e) {
+            const err = e as AxiosError
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
+const deleteCar = createAsyncThunk<void, { id: number }>(
+    'carSlice/deleteCar',
+    async ({id}, {rejectWithValue}) => {
+        try {
+            await carService.deleteById(id)
         } catch (e) {
             const err = e as AxiosError
             return rejectWithValue(err.response.data)
@@ -73,7 +85,10 @@ const slice = createSlice({
                 state.trigger = !state.trigger
             })
             .addCase(update.fulfilled, state => {
+                state.trigger = !state.trigger
                 state.carForUpdate = null
+            })
+            .addCase(deleteCar.fulfilled, state => {
                 state.trigger = !state.trigger
             })
 
@@ -88,7 +103,8 @@ const carActions = {
     ...actions,
     getAll,
     save,
-    update
+    update,
+    deleteCar
 }
 
 export {

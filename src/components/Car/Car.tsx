@@ -19,7 +19,7 @@ const Car: FC<IProps> = ({car}) => {
             <div>price: {price}</div>
             <div>year: {year}</div>
             <button onClick={() => dispatch(carActions.setCarForUpdate(car))}>Edit</button>
-            <button>Delete</button>
+            <button onClick={() => dispatch(carActions.deleteCar({id}))}>Delete</button>
             <hr/>
         </div>
     );

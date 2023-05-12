@@ -22,7 +22,6 @@ const CarForm = () => {
             setValue('year', carForUpdate.year, {shouldValidate: true})
         }
     }, [dispatch, carForUpdate, setValue])
-
     const save: SubmitHandler<ICar> = async (car) => {
         await dispatch(carActions.save({car}))
         reset()
@@ -35,9 +34,9 @@ const CarForm = () => {
 
     return (
         <form onSubmit={handleSubmit(carForUpdate ? update : save)}>
-            <input type="text" placeholder={'brand'} {...register('brand')}/>
-            <input type="text" placeholder={'price'} {...register('price')}/>
-            <input type="text" placeholder={'year'} {...register('year')}/>
+            <input type="text" placeholder={'brand'} {...register('brand', {required: true})}/>
+            <input type="text" placeholder={'price'} {...register('price', {required: true})}/>
+            <input type="text" placeholder={'year'} {...register('year', {required: true})}/>
             <button disabled={!isValid}>{carForUpdate ? 'Update' : 'Save'}</button>
             {Object.keys(errors).length > 0 && <div>{Object.values(errors)[0].message}</div>}
             <hr/>
