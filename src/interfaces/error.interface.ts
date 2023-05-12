@@ -1,6 +1,7 @@
 export interface IError {
-    detail?: string[];
-    brand?: string[];
-    price?: string[];
-    year?: string[];
+    detail?: string;
+}
+
+export interface IErrorAuth extends IError {
+    username: string[];
 }
