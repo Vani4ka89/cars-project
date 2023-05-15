@@ -1,26 +1,25 @@
-import {createAsyncThunk, createSlice, isRejectedWithValue} from "@reduxjs/toolkit";
-
-import {ICar, IPagination} from "../../interfaces";
+import {createAsyncThunk, createSlice, isFulfilled, isRejectedWithValue} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
+
+import {ICar, IError, IPagination} from "../../interfaces";
 import {carService} from "../../services/car.service";
-import {IError} from "../../interfaces";
 
 interface IState {
     cars: ICar[];
     prev: string;
     next: string;
+    error: IError;
     carForUpdate: ICar;
     trigger: boolean;
-    error: IError
 }
 
 const initialState: IState = {
     cars: [],
     prev: null,
     next: null,
+    error: null,
     carForUpdate: null,
-    trigger: false,
-    error: null
+    trigger: false
 }
 
 const getAll = createAsyncThunk<IPagination<ICar[]>, void>(
@@ -48,7 +47,7 @@ const save = createAsyncThunk<void, { car: ICar }>(
     }
 )
 
-const update = createAsyncThunk<void, { id: number, car: ICar }>(
+const update = createAsyncThunk<ICar, { id: number, car: ICar }>(
     'carSlice/update',
     async ({id, car}, {rejectWithValue}) => {
         try {
@@ -83,20 +82,18 @@ const slice = createSlice({
     extraReducers: builder =>
         builder
             .addCase(getAll.fulfilled, (state, action) => {
-                const {prev, next, items} = action.payload;
+                const {items, prev, next} = action.payload
                 state.cars = items
                 state.prev = prev
                 state.next = next
             })
-            .addCase(save.fulfilled, state => {
+
+            .addMatcher(isFulfilled(save, update, deleteCar), state => {
                 state.trigger = !state.trigger
             })
-            .addCase(update.fulfilled, state => {
-                state.trigger = !state.trigger
-                state.carForUpdate = null
-            })
-            .addCase(deleteCar.fulfilled, state => {
-                state.trigger = !state.trigger
+
+            .addMatcher(isFulfilled(), state => {
+                state.error = null
             })
 
             .addMatcher(isRejectedWithValue(), (state, action) => {
