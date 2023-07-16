@@ -2,9 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 50px;
-    background-color: black;
-    color: cornflowerblue;
+    height: 75px;
+    background-color: #00003a;
+    color: yellow;
+    margin-bottom: 20px;
 }
 
 .Header h1 {

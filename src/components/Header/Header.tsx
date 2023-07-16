@@ -5,6 +5,7 @@ import css from './Header.module.css';
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import {authActions} from "../../redux/slices";
 import {authService} from "../../services";
+import logo from "../../assets/pictures/car-logo.jpg";
 
 const Header: FC = () => {
     const {me} = useAppSelector(state => state.authReducer);
@@ -18,7 +19,7 @@ const Header: FC = () => {
 
     return (
         <div className={css.Header}>
-            <h1>Logo</h1>
+            <img src={logo} alt="car-logo" style={{width: "150px", height: "75px"}}/>
             {
                 me ?
                     <div>
