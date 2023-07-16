@@ -5,20 +5,24 @@ import {urls} from "../constants";
 
 class CarService {
     getAll(): IRes<IPagination<ICar[]>> {
-        return axiosService.get(urls.cars.cars)
+        return axiosService.get(urls.cars)
     }
 
-    save(car: ICar): IRes<ICar> {
-        return axiosService.post(urls.cars.cars, car)
+    create(car: ICar): IRes<ICar> {
+        return axiosService.post(urls.cars, car)
     }
 
     updateById(id: number, car: ICar): IRes<ICar> {
-        return axiosService.put(urls.cars.byId(id), car)
+        return axiosService.put(urls.byId(id), car)
     }
 
     deleteById(id: number): IRes<void> {
-        return axiosService.delete(urls.cars.byId(id))
+        return axiosService.delete(urls.byId(id))
+    }
+
+    addPhoto(id: number, photo: FormData): IRes<ICar> {
+        return axiosService.put(urls.addPhoto(id), photo)
     }
 }
 
-export const carService = new CarService()
+export const carService = new CarService();

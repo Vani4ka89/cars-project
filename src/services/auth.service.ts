@@ -1,8 +1,9 @@
+import {AxiosResponse} from "axios";
+
 import {IAuth, ITokens, IUser} from "../interfaces";
 import {IRes} from "../types";
 import {axiosService} from "./axios.service";
 import {urls} from "../constants";
-import {AxiosResponse} from "axios";
 
 class AuthService {
 
@@ -16,7 +17,7 @@ class AuthService {
     async login(user: IAuth): Promise<IUser> {
         const {data}: AxiosResponse<ITokens> = await axiosService.post(urls.auth.login, user);
         this.setTokens(data)
-        const {data: me} = await authService.me();
+        const {data: me}: AxiosResponse<IUser> = await this.me();
         return me
     }
 
@@ -39,4 +40,4 @@ class AuthService {
     }
 }
 
-export const authService = new AuthService()
+export const authService = new AuthService();

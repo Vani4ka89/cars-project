@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice, isFulfilled, isRejectedWithValue} from "@
 import {AxiosError} from "axios";
 
 import {ICar, IError, IPagination} from "../../interfaces";
-import {carService} from "../../services/car.service";
+import {carService} from "../../services";
 
 interface IState {
     cars: ICar[];
@@ -10,7 +10,7 @@ interface IState {
     next: string;
     error: IError;
     carForUpdate: ICar;
-    trigger: boolean;
+    trigger: boolean
 }
 
 const initialState: IState = {
@@ -26,7 +26,7 @@ const getAll = createAsyncThunk<IPagination<ICar[]>, void>(
     'carSlice/getAll',
     async (_, {rejectWithValue}) => {
         try {
-            const {data} = await carService.getAll();
+            const {data} = await carService.getAll()
             return data
         } catch (e) {
             const err = e as AxiosError
@@ -35,11 +35,11 @@ const getAll = createAsyncThunk<IPagination<ICar[]>, void>(
     }
 )
 
-const save = createAsyncThunk<void, { car: ICar }>(
-    'carSlice/save',
+const create = createAsyncThunk<void, { car: ICar }>(
+    'carSlice/create',
     async ({car}, {rejectWithValue}) => {
         try {
-            await carService.save(car)
+            await carService.create(car)
         } catch (e) {
             const err = e as AxiosError
             return rejectWithValue(err.response.data)
@@ -47,7 +47,7 @@ const save = createAsyncThunk<void, { car: ICar }>(
     }
 )
 
-const update = createAsyncThunk<ICar, { id: number, car: ICar }>(
+const update = createAsyncThunk<void, { id: number, car: ICar }>(
     'carSlice/update',
     async ({id, car}, {rejectWithValue}) => {
         try {
@@ -82,22 +82,22 @@ const slice = createSlice({
     extraReducers: builder =>
         builder
             .addCase(getAll.fulfilled, (state, action) => {
-                const {items, prev, next} = action.payload
+                const {next, prev, items} = action.payload
                 state.cars = items
                 state.prev = prev
                 state.next = next
             })
 
-            .addMatcher(isFulfilled(save, update, deleteCar), state => {
-                state.trigger = !state.trigger
-            })
-
-            .addMatcher(isFulfilled(), state => {
-                state.error = null
+            .addCase(update.fulfilled, state => {
+                state.carForUpdate = null
             })
 
             .addMatcher(isRejectedWithValue(), (state, action) => {
                 state.error = action.payload
+            })
+
+            .addMatcher(isFulfilled(create, update, deleteCar), state => {
+                state.trigger = !state.trigger
             })
 });
 
@@ -106,7 +106,7 @@ const {reducer: carReducer, actions} = slice;
 const carActions = {
     ...actions,
     getAll,
-    save,
+    create,
     update,
     deleteCar
 }

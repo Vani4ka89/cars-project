@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {FC} from 'react';
 
-import {AuthForm} from "../../components";
+import {RegisterForm} from "../../components";
 
-const RegisterPage = () => {
+const RegisterPage: FC = () => {
     return (
         <div>
-            <AuthForm/>
+            <RegisterForm/>
         </div>
     );
 };

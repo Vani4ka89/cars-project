@@ -1,9 +1,10 @@
-import React, {useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from "../../hooks";
-import {carActions} from "../../redux";
-import {Car} from "../Car/Car";
+import {FC, useEffect} from 'react';
 
-const Cars = () => {
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {Car} from "../Car/Car";
+import {carActions} from "../../redux";
+
+const Cars: FC = () => {
 
     const {cars, trigger} = useAppSelector(state => state.carReducer);
     const dispatch = useAppDispatch();

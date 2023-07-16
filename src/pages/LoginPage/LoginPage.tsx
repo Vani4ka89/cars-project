@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {FC} from 'react';
 
-import {LoginForm} from "../../components/LoginForm/LoginForm";
+import {LoginForm} from "../../components";
 
-const LoginPage = () => {
+const LoginPage: FC = () => {
     return (
         <div>
             <LoginForm/>

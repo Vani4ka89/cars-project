@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 
 import {IAuth} from "../../interfaces";
 import {useAppDispatch} from "../../hooks";
-import {authActions} from "../../redux/slices/auth.slice";
+import {authActions} from "../../redux/slices";
 
 const LoginForm = () => {
 
@@ -24,7 +24,6 @@ const LoginForm = () => {
             <input type="text" placeholder={'username'} {...register('username', {required: true})}/>
             <input type="text" placeholder={'password'} {...register('password', {required: true})}/>
             <button disabled={!isValid}>Login</button>
-            <hr/>
         </form>
     );
 };

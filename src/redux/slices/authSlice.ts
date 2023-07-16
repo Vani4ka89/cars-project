@@ -1,21 +1,21 @@
-import {createAsyncThunk, createSlice, isRejectedWithValue} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, isFulfilled, isRejectedWithValue} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 
 import {IAuth, IErrorAuth, IUser} from "../../interfaces";
-import {authService} from "../../services/auth.service";
+import {authService} from "../../services";
 
-interface IState {
+export interface IState {
     error: IErrorAuth;
-    me: IUser;
+    me: IUser
 }
 
 const initialState: IState = {
     error: null,
     me: null
-};
+}
 
-const register = createAsyncThunk<IUser, IAuth>(
-    'authSlice/register',
+const register = createAsyncThunk<void, IAuth>(
+    'authSlice/registerUser',
     async (user, {rejectWithValue}) => {
         try {
             await authService.register(user)
@@ -30,11 +30,19 @@ const login = createAsyncThunk<IUser, IAuth>(
     'authSlice/login',
     async (user, {rejectWithValue}) => {
         try {
-            await authService.login(user)
+            return await authService.login(user)
         } catch (e) {
             const err = e as AxiosError
             return rejectWithValue(err.response.data)
         }
+    }
+)
+
+const me = createAsyncThunk<IUser, void>(
+    'authSlice/me',
+    async () => {
+        const {data} = await authService.me();
+        return data
     }
 )
 
@@ -44,11 +52,17 @@ const slice = createSlice({
     reducers: {},
     extraReducers: builder =>
         builder
-
             .addCase(login.fulfilled, (state, action) => {
                 state.me = action.payload
             })
 
+            .addCase(me.fulfilled, (state, action) => {
+                state.me = action.payload
+            })
+
+            .addMatcher(isFulfilled(), state => {
+                state.error = null
+            })
             .addMatcher(isRejectedWithValue(), (state, action) => {
                 state.error = action.payload as IErrorAuth
             })
@@ -59,7 +73,8 @@ const {reducer: authReducer, actions} = slice;
 const authActions = {
     ...actions,
     register,
-    login
+    login,
+    me
 }
 
 export {

@@ -6,5 +6,5 @@ export interface IUser {
     is_superuser: boolean;
     last_login: Date;
     created: Date;
-    updated: Date;
+    updated: Date
 }
