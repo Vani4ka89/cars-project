@@ -20,10 +20,11 @@ const Car: FC<IProps> = ({car}) => {
         await dispatch(carActions.deleteCar({id}))
     }
 
+
     const addPhoto = async (): Promise<void> => {
         const formData = new FormData();
         const file: Blob = filePic.current.files[0];
-        formData.append('photo', file)
+        formData.append('photo', file);
         await carService.addPhoto(id, formData);
         setImage(URL.createObjectURL(file));
     };
@@ -39,7 +40,8 @@ const Car: FC<IProps> = ({car}) => {
             <div>year: {year}</div>
             <button onClick={() => dispatch(carActions.setCarForUpdate(car))}>Edit</button>
             <button onClick={deleteCar}>Delete</button>
-            <input type="file" style={{display: "none"}} ref={filePic} disabled={!!photo || !!image}
+            <input type="file" accept={'image/jpeg image/png'} style={{display: "none"}} ref={filePic}
+                   disabled={!!photo || !!image}
                    onChange={addPhoto}/>
             <hr/>
         </div>

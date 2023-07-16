@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import {createBrowserHistory} from "history";
 
 import {baseURL, urls} from "../constants";
@@ -20,7 +20,7 @@ axiosService.interceptors.request.use(config => {
 
 axiosService.interceptors.response.use(
     res => res,
-    async (error) => {
+    async (error: AxiosError) => {
         const originalRequest = error.config;
         if (error.response.status === 401) {
             if (!isRefreshing) {
